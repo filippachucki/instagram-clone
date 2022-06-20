@@ -97,7 +97,7 @@ function App() {
 
   return (
     <div className="app">
-      {user.displayName ? (
+      {user ? (
         <div className="app__upload">
           <ImageUpload username={user.displayName} />
         </div>
