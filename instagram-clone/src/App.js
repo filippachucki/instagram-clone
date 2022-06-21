@@ -6,6 +6,9 @@ import Button from '@mui/material/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import { Input, Modal } from '@material-ui/core';
 import ImageUpload from './ImageUpload';
+import {Helmet} from "react-helmet";
+
+
 
 function getModalStyle() {
   const top = 50;
@@ -75,15 +78,20 @@ function App() {
   const signUp = (event) => {
     event.preventDefault();
 
-    auth.createUserWithEmailAndPassword(email, password)
+    auth
+      .createUserWithEmailAndPassword(email, password)
       .then((authUser) => {
         return authUser.user.updateProfile({
           displayName: username
         })
-      })
-      .catch((error) => alert(error.message))
+        .then((authUser) =>{
+          setUser(authUser);
+        })
 
-      setOpen(false);
+      })
+      .catch((error) => alert(error.message));
+
+    setOpen(false);
   }
   
   const signIn = (event) => {
@@ -97,20 +105,13 @@ function App() {
 
   return (
     <div className="app">
-      {user ? (
-        <div className="app__upload">
-          <ImageUpload username={user.displayName} />
-        </div>
-      ) : (
-        <center>
-          <h3>Login to upload</h3>
-        </center>
-      )}
 
-
-      
-
-
+      <Helmet>
+                <meta charSet="utf-8" />
+                <title>InstagramLite</title>
+                <link rel="canonical" href="http://mysite.com/example" />
+                <meta name="description" content="Instagram Clone" />
+          </Helmet>
 
       <Modal
         open={open}
@@ -184,8 +185,7 @@ function App() {
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/320px-Instagram_logo.svg.png"
           alt="logo"
         />
-      </div>
-      {user ? (
+              {user ? (
         <Button onClick={() => auth.signOut()}>Logout</Button>
        ):(
         <div className='app__loginContainer'>
@@ -194,15 +194,28 @@ function App() {
         </div>
        )
        }
-      
+      </div>
 
-      <h1>Hello</h1>
+      <div className='app__posts'>
       {
         //setting up key allowed me to refresh only uploaded image
         posts.map(({ id, post }) => (
-          <Post key={id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
+          <Post key={id} postId={id} user={user} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
         ))
       }
+      </div>
+
+
+
+      {user ? (
+        <div className="app__upload">
+          <ImageUpload username={user.displayName} />
+        </div>
+      ) : (
+        <center>
+          <h3>Login to upload</h3>
+        </center>
+      )}
 
     </div>
   );
