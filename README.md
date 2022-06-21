@@ -1,2 +1,2 @@
-# Lite version of instagram, this is my first reactJS project
+# Lite version of instagram, practising my reactJS skills.
  
